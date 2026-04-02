@@ -246,6 +246,13 @@ runs:
     - uses: chainguard-dev/actions/setup-gitsign@be7b31a01af8ce7228fe901326f1d223fb788e14 # v1.14.12
       if: ${{ steps.create_pr_update.outputs.create_pr_update == 'true' && inputs.use-gitsign == 'true' }}
 
+    - name: Configure git credentials
+      if: ${{ steps.create_pr_update.outputs.create_pr_update == 'true' }}
+      shell: bash
+      run: |
+        git config --global credential.helper store
+        echo "https://x-access-token:${{ inputs.token }}@github.com" > ~/.git-credentials
+
     - name: Create Pull Request
       uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
       if: ${{ steps.create_pr_update.outputs.create_pr_update == 'true' }}
